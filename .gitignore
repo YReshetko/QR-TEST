@@ -1,4 +1,8 @@
 .gradle/
+.idea/
+*.iml
+*.bat
+build/
 gradle/
 gradlew
 lib/

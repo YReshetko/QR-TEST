@@ -1,4 +1,4 @@
-package com.my.test
+package com.my.example.model
 data class Greeting(val id: Long, val content:String) {
 
 }

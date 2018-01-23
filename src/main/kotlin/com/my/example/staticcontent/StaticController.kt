@@ -1,4 +1,4 @@
-package com.my.test
+package com.my.example.staticcontent
 
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.RequestMapping
