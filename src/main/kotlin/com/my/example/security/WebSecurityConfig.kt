@@ -1,34 +1,46 @@
 package com.my.example.security
 
-import org.springframework.boot.autoconfigure.security.SecurityProperties
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.*
-import org.springframework.format.FormatterRegistry
-import org.springframework.http.converter.HttpMessageConverter
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.*
-import org.springframework.security.core.userdetails.UserDetailsService
-import org.springframework.security.provisioning.InMemoryUserDetailsManager
+import org.springframework.web.accept.ContentNegotiationStrategy
 
-import org.springframework.security.core.userdetails.User
-import org.springframework.validation.MessageCodesResolver
-import org.springframework.validation.Validator
-import org.springframework.web.method.support.HandlerMethodArgumentResolver
-import org.springframework.web.method.support.HandlerMethodReturnValueHandler
-import org.springframework.web.servlet.HandlerExceptionResolver
-import org.springframework.web.servlet.config.annotation.*
-
+@Configuration
 @EnableWebSecurity
-class WebSecurityConfig : WebMvcConfigurerAdapter() {
+class WebSecurityConfig: WebSecurityConfigurerAdapter() {
 
-    @Bean
+    protected override fun configure(http: HttpSecurity) {
+        http
+                .authorizeRequests()
+                .antMatchers(",", "/home").permitAll().anyRequest().authenticated()
+                .and()
+                .formLogin().loginPage("/login").permitAll()
+                .and()
+                .logout().permitAll()
+    }
+
+    @Autowired
+    @Throws(Exception::class)
+    fun configureGlobal(auth: AuthenticationManagerBuilder)
+    {
+        auth.inMemoryAuthentication()
+                .withUser("user").password("password").roles("USER")
+    }
+
+    override fun setContentNegotationStrategy(contentNegotiationStrategy: ContentNegotiationStrategy?) {
+        super.setContentNegotationStrategy(contentNegotiationStrategy)
+    }
+    /*@Bean
     @Throws(Exception::class)
     fun userDetailsService(): UserDetailsService {
         val manager = InMemoryUserDetailsManager()
         manager.createUser(User.withUsername("user").password("password").roles("USER").build())
         return manager
-    }
+    }*/
 
-    @Throws(Exception::class)
+    /*@Throws(Exception::class)
     fun configure(http: HttpSecurity){
         http
                 .authorizeRequests()
@@ -37,5 +49,31 @@ class WebSecurityConfig : WebMvcConfigurerAdapter() {
                 .formLogin()
                 .loginPage("/login.html")
         .permitAll();
+    }*/
+
+  /*  @Configuration
+    @Order(1)
+    inner class ApiWebSecurityConfigurationAdapter: WebSecurityConfigurerAdapter() {
+        @Throws(Exception::class)
+        protected override fun configure(http:HttpSecurity){
+            http*/
+                   // .antMatcher("/api/**")
+                    /*.authorizeRequests()
+                    .anyRequest().hasRole("ADMIN")
+                    .and()
+                    .httpBasic()
+        }
     }
+
+    @Configuration
+    inner class FormLoginWebSecurityConfigurationAdapter: WebSecurityConfigurerAdapter() {
+        @Throws(Exception::class)
+        protected override fun configure(http:HttpSecurity){
+            http
+                    .authorizeRequests()
+                    .anyRequest().authenticated()
+                    .and()
+                    .formLogin().loginPage("/login.html")
+        }
+    }*/
 }
