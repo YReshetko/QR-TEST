@@ -13,6 +13,7 @@ class WebSecurityConfig: WebSecurityConfigurerAdapter() {
 
     protected override fun configure(http: HttpSecurity) {
         http
+                .csrf().disable()//  Unlock post requests
                 .authorizeRequests()
                 .antMatchers(",", "/home").permitAll().anyRequest().authenticated()
                 .and()
